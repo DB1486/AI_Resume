@@ -1,17 +1,18 @@
-def generate_feedback(skill_gap_result):
+def generate_feedback(result):
     feedback = []
-    if skill_gap_result["missing_skills"]:
-        feedback.append(
-            f"Consider adding experience with: {', '.join(skill_gap_result['missing_skills'])}."
-        )
-    if skill_gap_result["skill_match_score"] < 0.5:
-        feedback.append(
-            "Your profile has low alignment with the job role. Consider tailoring your resume."
-        )
-    if not skill_gap_result["matching_skills"]:
-        feedback.append(
-            "No strong skill overlap found. Add relevant project experience."
-        )
-    if not feedback:
-        feedback.append("Your resume is well aligned with the job description.")
+
+    if result["gap_severity"] == "High Skill Gap":
+        feedback.append("Significant skill mismatch with job requirements.")
+    elif result["gap_severity"] == "Medium Skill Gap":
+        feedback.append("Partial skill alignment detected. Improvement recommended.")
+    else:
+        feedback.append("Strong alignment with required skills.")
+
+    if result["experience_bonus"] == 0:
+        feedback.append("Consider clearly mentioning years of experience.")
+
+    for category, score in result["category_scores"].items():
+        if score < 0.5:
+            feedback.append(f"Improve skills in {category} domain.")
+
     return feedback
